@@ -1,14 +1,14 @@
 import setuptools
 
 setuptools.setup(name='nanobot-plugin-splatoon2tools',  # 包名
-      version='1.0.0',  # 版本号
+      version='1.0.1',  # 版本号
       description='splatoon2 tools bot',
       long_description='splatoon2 tools bot',
       author='DrinkOolongTea',
       author_email='sh.elsyion@qq.com',
       url='https://github.com/DrinkOolongTea/splatong2-bot',
       install_requires=["lxml",
-      "Pillow"],
+      "Pillow","nonebot2","onebot"],
       license='GNU General Public License v3.0',
       packages=setuptools.find_packages(),
       data_files=[('resource', ["splatoon2_tools/resource/.52_Gal.png"]),
