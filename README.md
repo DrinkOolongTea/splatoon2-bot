@@ -17,7 +17,7 @@
 
 <div align="center">
 
-# Splatoon2 Boot
+# Splatoon2 Bot
 
 </div>
 
