@@ -1,7 +1,7 @@
 import setuptools
 
 setuptools.setup(name='nanobot-plugin-splatoon2tools',  # 包名
-      version='1.0.2',  # 版本号
+      version='1.0.4',  # 版本号
       description='splatoon2 tools bot',
       long_description='splatoon2 tools bot',
       author='DrinkOolongTea',
@@ -100,7 +100,7 @@ setuptools.setup(name='nanobot-plugin-splatoon2tools',  # 包名
 ('resource', ["splatoon2_tools/resource/Undercover_Brella.png"]),
 ('resource', ["splatoon2_tools/resource/Wahoo_World.png"]),
 ('resource', ["splatoon2_tools/resource/Walleye_Warehouse.png"]),
-('resource', ["splatoon2_tools/resource/ypifounts.TTF"])],
+('resource', ["splatoon2_tools/resource/ypifounts.TTF"]),],
       classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
