@@ -28,7 +28,7 @@
 ```
 nb plugin install nanobot-plugin-splatoon2tools
 ```
-在nonebot2代码根目录中bot.py
+在nonebot2代码根目录bot.py中写入，具体位置可以参考：https://v2.nonebot.dev/docs/tutorial/plugin/load-plugin
 ```
 nonebot.load_plugin("splatoon_tools")
 ```
