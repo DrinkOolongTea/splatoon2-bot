@@ -25,6 +25,10 @@ class SplatoonInfo:
         china_font_path: Path = Path(self.data_path) / "china.TTF"
         self.font = ImageFont.truetype(str(font_path), 16)
         self.china_font = ImageFont.truetype(str(china_font_path), 16, encoding="unic")
+        time = self.battle_time()
+        self.time_list: List = [
+            str(time)+":00", str(time+2)+":00"
+        ]
 
     @staticmethod
     def change_time_zone(time: str) -> str:
@@ -38,6 +42,15 @@ class SplatoonInfo:
                     'RGBA')
             r, g, b, a = img.split()
             background_img.paste(img, box[i], mask=a)
+
+    @staticmethod
+    def battle_time() -> int:
+        curr_time = datetime.datetime.now()
+        time_str = curr_time.strftime("%H")
+        if int(time_str) % 2 > 0:
+            return int(time_str) - 1
+        else:
+            return int(time_str)
 
     @staticmethod
     def draw_text(info: List, box: List, background_img: Image, color: str, font: ImageFont):
@@ -97,7 +110,7 @@ class SplatoonInfo:
         new_list: List = [regular_battle_info[2], regular_battle_info[3], regular_battle_info[5],
                           regular_battle_info[6]]
         regular_battle_info = new_list
-        regular_battle_time: List = ["now", "next"]
+        now_time = self.battle_time()
         nonebot.logger.info(regular_battle_info)
 
         background_path: Path = Path(self.data_path) / "regular_battle.png"
@@ -105,7 +118,7 @@ class SplatoonInfo:
         img_box: List = [(60, 150), (331, 150), (60, 349), (331, 349)]
         text_box: List = [(100, 119), (100, 313)]
         self.paste_img(regular_battle_info, img_box, background)
-        self.draw_text(regular_battle_time, text_box, background, "white", self.font)
+        self.draw_text(self.time_list, text_box, background, "white", self.font)
 
         return self.img_base64_str(background, "png")
 
@@ -131,7 +144,7 @@ class SplatoonInfo:
         mode_text_box: List = [(100, 120), (100, 314)]
 
         self.paste_img(ranked_battle_info, img_box, background)
-        self.draw_text(ranked_battle_time, time_text_box, background, "white", self.font)
+        self.draw_text(self.time_list, time_text_box, background, "white", self.font)
         self.draw_text(mode_list, mode_text_box, background, "white", self.china_font)
 
         return self.img_base64_str(background, "png")
@@ -159,7 +172,7 @@ class SplatoonInfo:
         mode_text_box: List = [(100, 120), (100, 314)]
 
         self.paste_img(league_battle_info, img_box, background)
-        self.draw_text(league_battle_time, time_text_box, background, "white", self.font)
+        self.draw_text(self.time_list, time_text_box, background, "white", self.font)
         self.draw_text(mode_list, mode_text_box, background, "white", self.china_font)
 
         return self.img_base64_str(background, "png")

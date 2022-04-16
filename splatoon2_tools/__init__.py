@@ -7,12 +7,13 @@ from .config import Config
 global_config = get_driver().config
 config = Config.parse_obj(global_config)
 
-__splatoon2_tools_version__ = "v0.1.2"
+__splatoon2_tools_version__ = "v1.0.4"
 
 salmon_run = on_command('打工', aliases={'工'})
 regular_battle = on_command('凃地', aliases={'凃地'})
 ranked_battle = on_command('单排', aliases={'单排'})
 league_battle = on_command('组排', aliases={'组排'})
+
 
 @regular_battle.handle()
 async def _handle(matcher: Matcher):
