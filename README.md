@@ -59,3 +59,7 @@ nonebot.load_plugin("splatoon_tools")
 ## 插件声明
 ### 数据来源
 * splatoon-wiki：https://splatoonwiki.org/
+
+### 其他
+* 今天才发现插件前缀错了，应该为nonebot，自己不小心写成了nanobot，而且一直没有注意到，这里也不打算改了，一个原因是不打算麻烦官方了
+另外一个也算是对自己的一个要仔细检查的提醒吧。
