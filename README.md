@@ -57,6 +57,16 @@ nonebot.load_plugin("splatoon_tools")
 * 实现 “/工” 查询当日打工内容
 
 ## 插件声明
+### tips
+* 要注意部署所在服务器的时区，要不然就会出现发送的图片时间不对的情况
+```
+docker部署可以在dockerfile里加上
+ENV TZ=Asia/Shanghai
+
+或者docker run的时候加上
+-e TZ="Asia/Shanghai"
+```
+
 ### 数据来源
 * splatoon-wiki：https://splatoonwiki.org/
 
