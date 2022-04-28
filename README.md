@@ -43,16 +43,16 @@ nonebot.load_plugin("splatoon2_tools")
 ```
 ## 插件更新日志
 
-### v1.2.0 更新内容
+### v1.2.4 更新内容
 * 增加代理功能可在bot程序根目录加入配置文件 `splatoon2_tools_config.ini` 文件内容如下文所示,留空或者没有该配置文件为无代理
 ```
 [proxy]
 https_proxy = xxx.xxx.xxx.xxx
 port = xx
 ```
-不知道根目录在哪的可在nonebot启动程序内执行下面代码获取
+不知道根目录在哪的可在nonebot启动程序内执行下面代码获取(一般为bot.py所在目录)
 ```
-print(os.path.dirname(sys.argv[0]))
+print(os.getcwd())
 ```
 ### v1.1.1 更新内容
 * 处理字体资源无法打开问题

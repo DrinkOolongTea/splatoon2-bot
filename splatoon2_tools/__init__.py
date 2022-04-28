@@ -11,7 +11,7 @@ __splatoon2_tools_version__ = "v1.1.1"
 
 
 salmon_run = on_command('打工', aliases={'工'})
-regular_battle = on_command('凃地', aliases={'凃地'})
+regular_battle = on_command('涂地', aliases={'涂地'})
 ranked_battle = on_command('单排', aliases={'单排'})
 league_battle = on_command('组排', aliases={'组排'})
 

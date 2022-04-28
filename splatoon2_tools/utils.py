@@ -1,5 +1,4 @@
 import base64
-import logging
 import nonebot
 import datetime
 import requests
@@ -10,7 +9,6 @@ from pathlib import Path
 from lxml import etree
 from PIL import Image, ImageDraw, ImageFont
 from typing import List
-import sys
 import os
 import configparser
 import telnetlib
@@ -24,7 +22,7 @@ class SplatoonInfo:
 
         url = 'https://splatoonwiki.org/wiki/Main_Page'
         
-        proxy_file: Path = os.path.dirname(sys.argv[0]) + "/splatoon2_tools_config.ini"
+        proxy_file: Path = os.getcwd() + "/splatoon2_tools_config.ini"
 
         if os.path.isfile(proxy_file) :
             proxy_ip = self.get_config(proxy_file, "proxy", "https_proxy")
@@ -33,7 +31,10 @@ class SplatoonInfo:
                 proxy_https ={'http:':"https://" + proxy_ip + ":" + proxy_port + "/"}
                 self.selector = self.request_get(url, proxy=proxy_https)
             else: self.selector = self.request_get(url)
-        else: self.selector = self.request_get(url)
+        else:
+            nonebot.logger.info(proxy_file) 
+            nonebot.logger.info("未找到配置文件") 
+            self.selector = self.request_get(url)
 
         self.data_path = Path(config.resource_path)
         font_path: Path = Path(self.data_path) / "ypifounts"
@@ -72,10 +73,10 @@ class SplatoonInfo:
         if proxy is not None:
             nonebot.logger.info("使用代理连接")
             nonebot.logger.info(proxy)
-            req = requests.get(url, proxies=proxy)
+            req = requests.get(url, proxies=proxy, timeout=(5,30))
         else:
             nonebot.logger.info("不使用代理连接")
-            req = requests.get(url)
+            req = requests.get(url, timeout=(5,30))
         html = req.text
         selector = etree.HTML(html)
         return selector
