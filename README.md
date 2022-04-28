@@ -30,7 +30,7 @@ nb plugin install nanobot-plugin-splatoon2tools
 ```
 在nonebot2代码根目录bot.py中写入，具体位置可以参考：https://v2.nonebot.dev/docs/tutorial/plugin/load-plugin
 ```
-nonebot.load_plugin("splatoon_tools")
+nonebot.load_plugin("splatoon2_tools")
 ```
 启动bot.py即可
 ### 命令使用说明
@@ -43,6 +43,17 @@ nonebot.load_plugin("splatoon_tools")
 ```
 ## 插件更新日志
 
+### v1.2.0 更新内容
+* 增加代理功能可在bot程序根目录加入配置文件 `splatoon2_tools_config.ini` 文件内容如下文所示,留空或者没有该配置文件为无代理
+```
+[proxy]
+https_proxy = xxx.xxx.xxx.xxx
+port = xx
+```
+不知道根目录在哪的可在nonebot启动程序内执行下面代码获取
+```
+print(os.path.dirname(sys.argv[0]))
+```
 ### v1.1.1 更新内容
 * 处理字体资源无法打开问题
 ### v1.1.0 更新内容

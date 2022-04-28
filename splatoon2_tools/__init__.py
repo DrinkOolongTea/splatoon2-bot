@@ -7,7 +7,8 @@ from .config import Config
 global_config = get_driver().config
 config = Config.parse_obj(global_config)
 
-__splatoon2_tools_version__ = "v1.0.4"
+__splatoon2_tools_version__ = "v1.1.1"
+
 
 salmon_run = on_command('打工', aliases={'工'})
 regular_battle = on_command('凃地', aliases={'凃地'})

@@ -1,7 +1,7 @@
 import setuptools
 
 setuptools.setup(name='nanobot-plugin-splatoon2tools',  # 包名
-      version='1.1.0',  # 版本号
+      version='1.2.0',  # 版本号
       description='splatoon2 tools bot',
       long_description='splatoon2 tools bot',
       author='DrinkOolongTea',
