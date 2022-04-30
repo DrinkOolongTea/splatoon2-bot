@@ -10,7 +10,7 @@
   </a>
   
   <a href="">
-    <img src="https://img.shields.io/badge/release-v1.0.4-orange">
+    <img src="https://img.shields.io/badge/release-v1.3.0-orange">
   </a>
   
 </p>
