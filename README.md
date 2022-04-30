@@ -76,6 +76,8 @@ BOT_QQ_NAME = "xxxxx"
 * 增加代理功能，增加自动推送功能，优化代码逻辑，优化处理逻辑，增加缓存功能，同时修改获取数据为并发，减少阻断时间
 * 感谢[Sichongzou](https://github.com/Sichongzou)提供的灵感以及代码示范[示范地址](https://github.com/Sichongzou/splatoon2-bot)。
 
+* 2.0.0预览 追加可用命令新加自动推送群组，增加群主和管理员管理机制，追加喷三倒计时…………
+
 ### v1.2.4 更新内容（废弃）
 * 增加代理功能可在bot程序根目录加入配置文件 `splatoon2_tools_config.ini` 文件内容如下文所示,留空或者没有该配置文件为无代理
 ```
