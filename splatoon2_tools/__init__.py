@@ -115,8 +115,8 @@ async def _handle(matcher: Matcher):
 
 def news_list():
     """
-    @name：Sichongzou
-    @author： DrinkOolongTea
+    @name: news_list
+    @author： Sichongzou
     @remark： 组装群发消息
     @param： 
     @return： 组装好的群发消息
