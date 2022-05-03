@@ -13,6 +13,7 @@ class Config(BaseSettings):
     # 图片缓存路径
     image_cookies_path = os.getcwd() + "/splatonn2_tools_cookies"
 
+
     # 图片缓存名称
 
     salmon_run_cookies = image_cookies_path + "/salmon_run_cookies"

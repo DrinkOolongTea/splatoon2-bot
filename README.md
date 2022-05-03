@@ -10,7 +10,7 @@
   </a>
   
   <a href="">
-    <img src="https://img.shields.io/badge/release-v1.3.0-orange">
+    <img src="https://img.shields.io/badge/release-v1.3.1-orange">
   </a>
   
 </p>
@@ -40,6 +40,7 @@ nonebot.load_plugin("splatoon2_tools")
 /凃地
 /单排
 /组排
+/推送
 ```
 超级管理员命令
 ```
@@ -48,7 +49,7 @@ nonebot.load_plugin("splatoon2_tools")
 ```
 超级管理员手动更新数据
 ```
-/更新地图数据
+/更新
 ```
 可在喷2每次更新后自动推送
 
@@ -72,7 +73,14 @@ BOT_QQ_NAME = "xxxxx"
 
 ## 插件更新日志
 
-### v1.3.0（2.0前瞻） 更新内容
+### v1.3.1 更新内容
+* 修复v1.3.0版本bug
+* 更改字体，更贴合喷喷设定
+* 增加命令 `推送` 可一次性推送全部内容
+* 增加缓存功能可靠性
+* 修复打工结束时间如果为00:00不会跳转到下一天的bug
+
+### v1.3.0（2.0前瞻） 更新内容（废弃）
 * 增加代理功能，增加自动推送功能，优化代码逻辑，优化处理逻辑，增加缓存功能，同时修改获取数据为并发，减少阻断时间
 * 感谢[Sichongzou](https://github.com/Sichongzou)提供的灵感以及代码示范[示范地址](https://github.com/Sichongzou/splatoon2-bot)。
 

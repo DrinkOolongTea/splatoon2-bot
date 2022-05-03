@@ -36,9 +36,9 @@ class SplatoonInfo:
         nonebot.logger.info("开始清除缓存")
         for cookies in config.cookies_list:
             if os.path.exists(cookies):
-                nonebot.logger.info("clear %(cokies)s")
+                nonebot.logger.info('clear '+cookies)
                 os.remove(cookies)
-            else: nonebot.logger.info("%(cokies)s is not found")
+            else: nonebot.logger.info(cookies + " is not found")
         nonebot.logger.success("清除缓存结束")
     
     @staticmethod
@@ -52,7 +52,7 @@ class SplatoonInfo:
         """
         for cookies in config.cookies_list:
             if os.path.exists(cookies):
-                nonebot.logger.info("cookies %(cokies)s is ok")
+                nonebot.logger.info("cookies" + cookies + "is ok")
             else: return False
         return True
     
@@ -81,12 +81,11 @@ class SplatoonInfo:
                 self.selector = self.splatoon_utils.request_get(config.url, proxy=proxy_https)
             else: self.selector = self.splatoon_utils.request_get(config.url)
         else:
-            nonebot.logger.info(proxy_file) 
-            nonebot.logger.info("未找到配置文件") 
+            nonebot.logger.info("未找到配置参数") 
             self.selector = self.splatoon_utils.request_get(config.url)
         #字体时间等配置
         self.data_path = Path(config.resource_path)
-        font_path: Path = Path(self.data_path) / "ypifounts"
+        font_path: Path = Path(self.data_path) / "splatfontfont"
         china_font_path: Path = Path(self.data_path) / "china"
         self.font = ImageFont.truetype(str(font_path), 16)
         self.china_font = ImageFont.truetype(str(china_font_path), 16, encoding="unic")
@@ -112,18 +111,17 @@ class SplatoonInfo:
         """
         salmon_run_info: List = self.selector.xpath("//div[@class='bubbleboxbg'][4]//a/text()")
 
-        salmon_run_time: List = [self.selector.xpath("//div[@id='salmon1']/text()")[0],
+        request_salmon_run_time: List = [self.selector.xpath("//div[@id='salmon1']/text()")[0],
                                  self.selector.xpath("//div[@id='salmon2']/text()")[0]]
 
+        salmon_run_time = []
         # 处理获取到的时间
-        for i in range(len(salmon_run_time)):
-            tmp: List = salmon_run_time[i].split(" ")
-            tmp[2] = self.splatoon_utils.change_time_zone(tmp[2])
-            tmp[6] = self.splatoon_utils.change_time_zone(tmp[6])
+        for i in range(len(request_salmon_run_time)):
+            tmp = request_salmon_run_time[i].replace('UTC', '').split("- ")
+            time_str = str(self.splatoon_utils.change_time_zone(tmp[0])) + " -> " + self.splatoon_utils.change_time_zone(tmp[1])
+            salmon_run_time.append(time_str)
             # 移除不需要元素
-            tmp.pop(7)
-            salmon_run_time[i] = ' '.join(tmp)
-
+        
         background_path: Path = Path(self.data_path) / "salmon_run.png"
         background: Image = Image.open(str(background_path))
 
@@ -134,7 +132,7 @@ class SplatoonInfo:
 
         img_box: List = [(364, 147), (578, 142), (669, 142), (578, 201), (669, 201), (364, 333), (578, 330), (669, 330),
                          (578, 388), (669, 388)]
-        text_box: List = [(385, 122), (385, 307)]
+        text_box: List = [(385, 117), (385, 302)]
 
         self.splatoon_utils.paste_img(config.resource_path,salmon_run_info, img_box, background)
         self.splatoon_utils.draw_text(salmon_run_time, text_box, background, "white", self.font)
@@ -171,7 +169,7 @@ class SplatoonInfo:
         """
         @name：get_ranked_battle
         @author： DrinkOolongTea
-        @remark： 获取单人真格资讯
+        @remark： 获取真格资讯
         @param： 
         @return： 图片base64str
         """
@@ -192,8 +190,7 @@ class SplatoonInfo:
         background: Image = Image.open(str(background_path))
         img_box: List = [(60, 150), (331, 150), (60, 349), (331, 349)]
         time_text_box: List = [(50, 119), (50, 313)]
-        mode_text_box: List = [(100, 120), (100, 314)]
-
+        mode_text_box: List = [(110, 127), (110, 321)]
         self.splatoon_utils.paste_img(config.resource_path, ranked_battle_info, img_box, background)
         self.splatoon_utils.draw_text(self.time_list, time_text_box, background, "white", self.font)
         self.splatoon_utils.draw_text(mode_list, mode_text_box, background, "white", self.china_font)
@@ -206,7 +203,7 @@ class SplatoonInfo:
         """
         @name：get_League_Battle
         @author： DrinkOolongTea
-        @remark： 获取多人真格资讯
+        @remark： 获取联盟模式资讯
         @param： 
         @return： 图片base64str
         """
@@ -228,8 +225,7 @@ class SplatoonInfo:
         background: Image = Image.open(str(background_path))
         img_box: List = [(60, 150), (331, 150), (60, 349), (331, 349)]
         time_text_box: List = [(50, 119), (50, 313)]
-        mode_text_box: List = [(100, 120), (100, 314)]
-
+        mode_text_box: List = [(110, 127), (110, 321)]
         self.splatoon_utils.paste_img(config.resource_path, league_battle_info, img_box, background)
         self.splatoon_utils.draw_text(self.time_list, time_text_box, background, "white", self.font)
         self.splatoon_utils.draw_text(mode_list, mode_text_box, background, "white", self.china_font)

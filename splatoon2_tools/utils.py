@@ -64,7 +64,7 @@ class SplatoonUtiles:
         return config.get(section, option)
 
     @staticmethod
-    def change_time_zone(time: str) -> str:
+    def change_time_zone(time_str: str) -> str:
         """
         @name：change_time_zone
         @author： DrinkOolongTea
@@ -72,9 +72,9 @@ class SplatoonUtiles:
         @param： time:当前时间
         @return： 更改时区后时间
         """
-        time: str = datetime.datetime.strptime(time, "%H:%M")
-        time: str = (time + datetime.timedelta(hours=8)).strftime('%H:%M')
-        return time
+        time_str: str = datetime.datetime.strptime(time_str + str(datetime.datetime.today().year), "%b %d %H:%M %Y")
+        time_str: str = (time_str + datetime.timedelta(hours=8)).strftime('%m-%d %H:%M')
+        return time_str
 
     @staticmethod
     def battle_time() -> int:
@@ -127,7 +127,7 @@ class SplatoonUtiles:
         @param： 英文
         @return： 中文
         """
-        d = {"Rainmaker": "鱼", "Splat Zones": "占地", "Clam Blitz": "蛤蜊", "Tower Control": "塔"}
+        d = {"Rainmaker": "魚", "Splat Zones": "區域", "Clam Blitz": "蛤蜊", "Tower Control": "塔"}
         return d[context]
 
     @staticmethod
