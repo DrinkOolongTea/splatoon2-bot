@@ -26,13 +26,16 @@
 ### 安装方法
 安装命令
 ```
-nb plugin install nanobot-plugin-splatoon2tools
+pip install nanobot-plugin-splatoon2tools
 ```
 在nonebot2代码根目录bot.py中写入，具体位置可以参考：https://v2.nonebot.dev/docs/tutorial/plugin/load-plugin
 ```
 nonebot.load_plugin("splatoon2_tools")
 ```
 启动bot.py即可
+
+或者使用nonebot官方推荐的安装方法
+
 ### 命令使用说明
 私聊或者群聊发送
 ```
