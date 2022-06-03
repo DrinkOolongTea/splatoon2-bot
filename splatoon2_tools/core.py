@@ -2,7 +2,7 @@ import nonebot
 from nonebot import get_driver
 from tomlkit import boolean
 from .config import Config
-from .utils import SplatoonUtiles
+from .utils import SplatoonUtils
 from pathlib import Path
 from PIL import Image, ImageFont
 from typing import List
@@ -20,9 +20,15 @@ class SplatoonInfo:
     @param： 
     @return： 
     """
+
     def __init__(self):
 
-        self.splatoon_utils = SplatoonUtiles()
+        self.time_list = None
+        self.china_font = None
+        self.font = None
+        self.data_path = None
+        self.selector = None
+        self.splatoon_utils = SplatoonUtils()
 
     @staticmethod
     def clear_cookies():
@@ -36,11 +42,12 @@ class SplatoonInfo:
         nonebot.logger.info("开始清除缓存")
         for cookies in config.cookies_list:
             if os.path.exists(cookies):
-                nonebot.logger.info('clear '+cookies)
+                nonebot.logger.info('clear ' + cookies)
                 os.remove(cookies)
-            else: nonebot.logger.info(cookies + " is not found")
+            else:
+                nonebot.logger.info(cookies + " is not found")
         nonebot.logger.success("清除缓存结束")
-    
+
     @staticmethod
     def cookies_exists() -> boolean:
         """
@@ -53,9 +60,9 @@ class SplatoonInfo:
         for cookies in config.cookies_list:
             if os.path.exists(cookies):
                 nonebot.logger.info("cookies" + cookies + "is ok")
-            else: return False
+            else:
+                return False
         return True
-    
 
     def get_image_cookies(self):
         """
@@ -72,18 +79,14 @@ class SplatoonInfo:
             os.makedirs(images_cookies_dir)
 
         # 获取网页数据
-        proxy_file = config.proxy_file
-        if os.path.isfile(proxy_file) :
-            proxy_ip = global_config.https_proxy
-            proxy_port = global_config.proxy_port
-            if proxy_ip != "" and self.splatoon_utils.telnet(proxy_ip, int(proxy_port)):
-                proxy_https ={'http:':"https://" + proxy_ip + ":" + str(proxy_port) + "/"}
-                self.selector = self.splatoon_utils.request_get(config.url, proxy=proxy_https)
-            else: self.selector = self.splatoon_utils.request_get(config.url)
+        proxy_ip = global_config.https_proxy
+        proxy_port = global_config.proxy_port
+        if proxy_ip != "" and self.splatoon_utils.telnet(proxy_ip, int(proxy_port)):
+            proxy_https = {'http:': "https://" + proxy_ip + ":" + str(proxy_port) + "/"}
+            self.selector = self.splatoon_utils.request_get(config.url, proxy=proxy_https)
         else:
-            nonebot.logger.info("未找到配置参数") 
             self.selector = self.splatoon_utils.request_get(config.url)
-        #字体时间等配置
+        # 字体时间等配置
         self.data_path = Path(config.resource_path)
         font_path: Path = Path(self.data_path) / "splatfontfont"
         china_font_path: Path = Path(self.data_path) / "china"
@@ -91,15 +94,14 @@ class SplatoonInfo:
         self.china_font = ImageFont.truetype(str(china_font_path), 16, encoding="unic")
         tmp_time = self.splatoon_utils.battle_time()
         self.time_list: List = [
-            str(tmp_time)+":00", str(tmp_time+2)+":00"
+            str(tmp_time) + ":00", str(tmp_time + 2) + ":00"
         ]
 
-        #处理信息保存图片缓存
+        # 处理信息保存图片缓存
         self.splatoon_utils.save_bytes_file(config.salmon_run_cookies, self.get_salmon_run())
         self.splatoon_utils.save_bytes_file(config.regular_battle_cookies, self.get_regular_battle())
         self.splatoon_utils.save_bytes_file(config.ranked_battle_cookies, self.get_ranked_battle())
         self.splatoon_utils.save_bytes_file(config.league_battle_cookies, self.get_league_battle())
-
 
     def get_salmon_run(self) -> bytes:
         """
@@ -109,19 +111,19 @@ class SplatoonInfo:
         @param： 
         @return： 图片base64str
         """
-        salmon_run_info: List = self.selector.xpath("//div[@class='bubbleboxbg'][4]//a/text()")
+        salmon_run_info: List = self.selector.xpath("//div[@class='bubbleboxbg'][3]//a/text()")
 
         request_salmon_run_time: List = [self.selector.xpath("//div[@id='salmon1']/text()")[0],
-                                 self.selector.xpath("//div[@id='salmon2']/text()")[0]]
-
+                                         self.selector.xpath("//div[@id='salmon2']/text()")[0]]
         salmon_run_time = []
         # 处理获取到的时间
         for i in range(len(request_salmon_run_time)):
             tmp = request_salmon_run_time[i].replace('UTC', '').split("- ")
-            time_str = str(self.splatoon_utils.change_time_zone(tmp[0])) + " -> " + self.splatoon_utils.change_time_zone(tmp[1])
+            time_str = str(
+                self.splatoon_utils.change_time_zone(tmp[0])) + " -> " + self.splatoon_utils.change_time_zone(tmp[1])
             salmon_run_time.append(time_str)
             # 移除不需要元素
-        
+
         background_path: Path = Path(self.data_path) / "salmon_run.png"
         background: Image = Image.open(str(background_path))
 
@@ -129,16 +131,18 @@ class SplatoonInfo:
         salmon_run_info.pop(0)
         salmon_run_info.pop(5)
         salmon_run_info.pop(10)
+        salmon_run_info.pop(10)
+        salmon_run_info.pop(10)
+        salmon_run_info.pop(10)
 
         img_box: List = [(364, 147), (578, 142), (669, 142), (578, 201), (669, 201), (364, 333), (578, 330), (669, 330),
                          (578, 388), (669, 388)]
         text_box: List = [(385, 117), (385, 302)]
 
-        self.splatoon_utils.paste_img(config.resource_path,salmon_run_info, img_box, background)
+        self.splatoon_utils.paste_img(config.resource_path, salmon_run_info, img_box, background)
         self.splatoon_utils.draw_text(salmon_run_time, text_box, background, "white", self.font)
         nonebot.logger.info("处理打工资讯结束")
         return self.splatoon_utils.img_base64_str(background, "png")
-
 
     def get_regular_battle(self) -> bytes:
         """
@@ -148,9 +152,9 @@ class SplatoonInfo:
         @param： 
         @return： 图片base64str
         """
-        regular_battle_info: List = self.selector.xpath("//div[@class='bubbleboxbg'][2]//a/text()")
-        new_list: List = [regular_battle_info[2], regular_battle_info[3], regular_battle_info[5],
-                          regular_battle_info[6]]
+        regular_battle_info: List = self.selector.xpath("//div[@class='bubbleboxbg'][1]//a/text()")
+        new_list: List = [regular_battle_info[18], regular_battle_info[19], regular_battle_info[21],
+                          regular_battle_info[22]]
         regular_battle_info = new_list
         nonebot.logger.info(regular_battle_info)
 
@@ -158,12 +162,11 @@ class SplatoonInfo:
         background: Image = Image.open(str(background_path))
         img_box: List = [(60, 150), (331, 150), (60, 349), (331, 349)]
         text_box: List = [(100, 119), (100, 313)]
-        self.splatoon_utils.paste_img(config.resource_path,regular_battle_info, img_box, background)
+        self.splatoon_utils.paste_img(config.resource_path, regular_battle_info, img_box, background)
         self.splatoon_utils.draw_text(self.time_list, text_box, background, "white", self.font)
 
         nonebot.logger.info("处理涂地资讯结束")
         return self.splatoon_utils.img_base64_str(background, "png")
-
 
     def get_ranked_battle(self) -> bytes:
         """
@@ -173,15 +176,15 @@ class SplatoonInfo:
         @param： 
         @return： 图片base64str
         """
-        ranked_battle_info: List = self.selector.xpath("//div[@class='bubbleboxbg'][2]//a/text()")
-        mode_list: List = [ranked_battle_info[8], ranked_battle_info[11]]
+        ranked_battle_info: List = self.selector.xpath("//div[@class='bubbleboxbg'][1]//a/text()")
+        mode_list: List = [ranked_battle_info[24], ranked_battle_info[27]]
         new_list: List = []
         for i in range(len(mode_list)):
             new_list.append(self.splatoon_utils.mode_dict(mode_list[i]))
         mode_list = new_list
 
-        new_list: List = [ranked_battle_info[9], ranked_battle_info[10], ranked_battle_info[12],
-                          ranked_battle_info[13]]
+        new_list: List = [ranked_battle_info[25], ranked_battle_info[26], ranked_battle_info[28],
+                          ranked_battle_info[29]]
         ranked_battle_info = new_list
 
         nonebot.logger.info(ranked_battle_info)
@@ -198,7 +201,6 @@ class SplatoonInfo:
         nonebot.logger.info("处理单排资讯结束")
         return self.splatoon_utils.img_base64_str(background, "png")
 
-
     def get_league_battle(self) -> bytes:
         """
         @name：get_League_Battle
@@ -207,15 +209,15 @@ class SplatoonInfo:
         @param： 
         @return： 图片base64str
         """
-        league_battle_info: List = self.selector.xpath("//div[@class='bubbleboxbg'][2]//a/text()")
-        mode_list: List = [league_battle_info[15], league_battle_info[18]]
+        league_battle_info: List = self.selector.xpath("//div[@class='bubbleboxbg'][1]//a/text()")
+        mode_list: List = [league_battle_info[31], league_battle_info[34]]
         new_list: List = []
         for i in range(len(mode_list)):
             new_list.append(self.splatoon_utils.mode_dict(mode_list[i]))
         mode_list = new_list
 
-        new_list: List = [league_battle_info[16], league_battle_info[17], league_battle_info[19],
-                          league_battle_info[20]]
+        new_list: List = [league_battle_info[32], league_battle_info[33], league_battle_info[35],
+                          league_battle_info[36]]
 
         league_battle_info = new_list
 
@@ -233,7 +235,6 @@ class SplatoonInfo:
         nonebot.logger.info("处理组排资讯结束")
         return self.splatoon_utils.img_base64_str(background, "png")
 
-
     def push_salmon_run(self):
         """
         @name：push_league_battle
@@ -243,7 +244,6 @@ class SplatoonInfo:
         @return： 
         """
         return self.splatoon_utils.read_bytes_file(config.salmon_run_cookies)
-    
 
     def push_regular_battle(self):
         """
@@ -255,7 +255,6 @@ class SplatoonInfo:
         """
         return self.splatoon_utils.read_bytes_file(config.regular_battle_cookies)
 
-
     def push_ranked_battle(self):
         """
         @name：push_league_battle
@@ -263,9 +262,8 @@ class SplatoonInfo:
         @remark： 推送单排资讯
         @param： 
         @return： 
-        """ 
+        """
         return self.splatoon_utils.read_bytes_file(config.ranked_battle_cookies)
-    
 
     def push_league_battle(self):
         """
@@ -276,5 +274,3 @@ class SplatoonInfo:
         @return： 
         """
         return self.splatoon_utils.read_bytes_file(config.league_battle_cookies)
-
-    

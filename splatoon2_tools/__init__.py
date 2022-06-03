@@ -9,7 +9,7 @@ from .config import Config
 from nonebot import require
 from nonebot import get_bots
 from nonebot.permission import SUPERUSER
-from .utils import SplatoonUtiles
+from .utils import SplatoonUtils
 import threading
 
 # 初始化
@@ -20,76 +20,85 @@ driver = get_driver()
 __splatoon2_tools_version__ = "v1.3.0"
 
 splatoon2 = SplatoonInfo()
-splatoon2_utiles = SplatoonUtiles()
+splatoon2_utils = SplatoonUtils()
+
 
 @driver.on_startup
 async def start():
     get_cookies()
-    scheduler.add_job(cron_push, "cron", hour="*/2", minute = 5, id="cron_push")
-    scheduler.add_job(cron_get_cookies, "cron", hour="*/2", minute = 3, id="cron_get_cookies")
+    scheduler.add_job(cron_push, "cron", hour="*/2", minute=5, id="cron_push")
+    scheduler.add_job(cron_get_cookies, "cron", hour="*/2", minute=3, id="cron_get_cookies")
 
 
 if global_config.group_id_list is not None:
-    group_id_list=global_config.group_id_list
-else: group_id_list=[]
+    group_id_list = global_config.group_id_list
+else:
+    group_id_list = []
 
 if global_config.bot_qq is not None:
-    bot_qq=str(global_config.bot_qq)
-else: bot_qq = ""
+    bot_qq = str(global_config.bot_qq)
+else:
+    bot_qq = ""
 
 salmon_run = on_command('打工', aliases={'工'})
 regular_battle = on_command('涂地', aliases={'涂地'})
 ranked_battle = on_command('单排', aliases={'单排'})
 league_battle = on_command('组排', aliases={'组排'})
 scheduler = require("nonebot_plugin_apscheduler").scheduler
-admin_open= on_command('开启自动推送', permission=SUPERUSER)
-admin_close= on_command('关闭自动推送', permission=SUPERUSER)
+admin_open = on_command('开启自动推送', permission=SUPERUSER)
+admin_close = on_command('关闭自动推送', permission=SUPERUSER)
 update = on_command('更新', permission=SUPERUSER)
 push = on_command('推送')
 
+
 # 响应回复板块头
 @regular_battle.handle()
-async def _( matcher: Matcher):
-    if not splatoon2.cookies_exists(): 
-        splatoon2.get_image_cookies()    
+async def _(matcher: Matcher):
+    if not splatoon2.cookies_exists():
+        splatoon2.get_image_cookies()
     nonebot.logger.info("推送涂地资讯")
     await regular_battle.finish(MessageSegment.image(splatoon2.push_regular_battle()))
 
+
 @ranked_battle.handle()
 async def _(matcher: Matcher):
-    if not splatoon2.cookies_exists(): 
-        splatoon2.get_image_cookies()    
+    if not splatoon2.cookies_exists():
+        splatoon2.get_image_cookies()
     nonebot.logger.info("推送单排资讯")
     await ranked_battle.finish(MessageSegment.image(splatoon2.push_ranked_battle()))
 
+
 @league_battle.handle()
 async def _(matcher: Matcher):
-    if not splatoon2.cookies_exists(): 
-        splatoon2.get_image_cookies()    
+    if not splatoon2.cookies_exists():
+        splatoon2.get_image_cookies()
     nonebot.logger.info("推送组排资讯")
     await league_battle.finish(MessageSegment.image(splatoon2.push_league_battle()))
 
+
 @salmon_run.handle()
 async def _(matcher: Matcher):
-    if not splatoon2.cookies_exists(): 
-        splatoon2.get_image_cookies()    
+    if not splatoon2.cookies_exists():
+        splatoon2.get_image_cookies()
     nonebot.logger.info("推送打工资讯")
     await salmon_run.finish(MessageSegment.image(splatoon2.push_salmon_run()))
 
 
 @push.handle()
 async def _(matcher: Matcher, event: Event):
-    if not splatoon2.cookies_exists(): 
+    if not splatoon2.cookies_exists():
         splatoon2.get_image_cookies()
-    forward_msg=news_list()
-    bot=get_bots()[bot_qq]
-    await bot.send_group_forward_msg(group_id=event.get_session_id().split('_')[1],messages=forward_msg)
-    
+    forward_msg = news_list()
+    bot = get_bots()[bot_qq]
+    await bot.send_group_forward_msg(group_id=event.get_session_id().split('_')[1], messages=forward_msg)
+
+
 @update.handle()
 async def _(matcher: Matcher):
     splatoon2.clear_cookies()
     get_cookies()
     await update.finish("更新成功")
+
 
 # 响应回复板块尾
 
@@ -103,22 +112,23 @@ def cron_get_cookies():
 async def cron_push():
     if not splatoon2.cookies_exists():
         splatoon2.get_image_cookies()
-    forward_msg=news_list()
-    bot=get_bots()[bot_qq]
+    forward_msg = news_list()
+    bot = get_bots()[bot_qq]
     if group_id_list is not None:
         for group_id in group_id_list:
             try:
                 nonebot.logger.info(group_id)
-                await bot.send_group_forward_msg(group_id=group_id,messages=forward_msg)
+                await bot.send_group_forward_msg(group_id=group_id, messages=forward_msg)
             except:
                 nonebot.logger.error("推送群消息出现错误")
+
 
 @admin_open.handle()
 async def _(matcher: Matcher):
     if scheduler.get_job("cron_push") is not None:
         await admin_close.finish(MessageSegment.text("已经开启自动推送了哦"))
     else:
-        scheduler.add_job(cron_push, "cron", hour="*/2", minute = 5, id="cron_push")
+        scheduler.add_job(cron_push, "cron", hour="*/2", minute=5, id="cron_push")
         await admin_open.finish(MessageSegment.text("已打开自动推送"))
 
 
@@ -126,9 +136,10 @@ async def _(matcher: Matcher):
 async def _(matcher: Matcher):
     if scheduler.get_job("cron_push") is None:
         await admin_close.finish(MessageSegment.text("没有开启自动推送哦"))
-    else: 
+    else:
         scheduler.remove_job("cron_push")
         await admin_close.finish(MessageSegment.text("已关闭自动推送"))
+
 
 # 定时任务尾
 
@@ -142,8 +153,8 @@ def news_list():
     @param： 
     @return： 组装好的群发消息
     """
-    forward_msg=[]
-    #forward_msg.append(to_json("这里是Splatoon2定时推送姬,以下是未来时间段的地图信息！"))
+    forward_msg = []
+    # forward_msg.append(to_json("这里是Splatoon2定时推送姬,以下是未来时间段的地图信息！"))
     forward_msg.append(to_json(Message(MessageSegment.image(splatoon2.push_league_battle()))))
     forward_msg.append(to_json(Message(MessageSegment.image(splatoon2.push_ranked_battle()))))
     forward_msg.append(to_json(Message(MessageSegment.image(splatoon2.push_regular_battle()))))

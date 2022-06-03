@@ -11,7 +11,7 @@ import telnetlib
 import httpx
 
 
-class SplatoonUtiles:
+class SplatoonUtils:
 
     @staticmethod
     def telnet(ip: str, port: str):
@@ -29,7 +29,7 @@ class SplatoonUtiles:
         except:
             nonebot.logger.error("代理连接超时" + ip + ":" + str(port))
             return False
-    
+
     @staticmethod
     def request_get(url: str, proxy: dict = None):
         """
@@ -38,18 +38,18 @@ class SplatoonUtiles:
         @remark： 获取数据
         @return： 获取到的数据
         """
-        
+
         if proxy is not None:
             nonebot.logger.info("使用代理连接")
             nonebot.logger.info(proxy)
-            req = httpx.get(url,timeout=(5,30))
+            req = httpx.get(url, timeout=(5, 30))
         else:
             nonebot.logger.info("不使用代理连接")
-            req = httpx.get(url,timeout=(10,60))
+            req = httpx.get(url, timeout=(10, 60))
         html = req.text
         selector = etree.HTML(html)
         return selector
-    
+
     @staticmethod
     def get_config(path: Path, section: str, option: str) -> str:
         """
@@ -154,7 +154,7 @@ class SplatoonUtiles:
         """
         for i in range(len(info)):
             img = Image.open(Path(path / Path((info[i]).replace(" ", "_") + ".png"))).convert(
-                    'RGBA')
+                'RGBA')
             r, g, b, a = img.split()
             background_img.paste(img, box[i], mask=a)
 
